@@ -6,7 +6,7 @@ jobs:
   find-files:
     runs-on: ubuntu-latest
     outputs: 
-      files: ${{ steps.abc.outputs.files }}
+      files: ${{ steps.abc.outputs.added_modified }}
     steps:
       - uses: actions/checkout@v3
       - uses: jitterbit/get-changed-files@v1
@@ -14,11 +14,6 @@ jobs:
         with:
           format: space-delimited
           token: ${{ secrets.GITHUB_TOKEN }}
-      - name: Printing
-        run: |
-          echo "Added+Modified Markdown Files:"
-          echo "${{ steps.abc.outputs.added_modified }}"
-          echo "::set-output name=files::${{ steps.abc.outputs.added_modified}}"
   show-files:
     needs: find-files
     runs-on: ubuntu-latest
