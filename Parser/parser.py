@@ -48,6 +48,7 @@ if __name__ == "__main__":
         description="Markdown to HTML parser with Gretel custom Markdown"
     )
     parser.add_argument("-f", "--file", help="Markdown file to convert to HTML string")
+    parser.add_argument("-fs", "--file-list", help="List of Markdown files to convert to HTML strings")
     parser.add_argument(
         "-hh",
         "--headers",
@@ -57,14 +58,12 @@ if __name__ == "__main__":
     parser.add_argument("-o", "--output", help="File location to store HTML output")
 
     args = parser.parse_args()
-    if args.file is None:
-        print("Markdown file to convert required.")
+    if args.file is None and args.file_list is None:
+        print("Markdown file(s) to convert required.")
         sys.exit(1)
 
-    if args.headers is True:
-        html_output = parse_markdown(args.file, headers=True)
-    else:
-        html_output = parse_markdown(args.file)
+    
+    html_output = parse_markdown(args.file, headers=args.headers)
 
     if args.output is not None:
         with open(args.output, "w") as fh:
