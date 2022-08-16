@@ -18,7 +18,7 @@ jobs:
         run: |
           echo "Added+Modified Markdown Files:"
           echo "${{ steps.abc.outputs.added_modified }}" | { grep *.md || true; }
-          echo "::set-output name=files::${{ setps.abc.outputs.added_modified}}"
+          echo "::set-output name=files::${{ steps.abc.outputs.added_modified}}"
   show-files:
     needs: find-files
     runs-on: ubuntu-latest
