@@ -8,18 +8,14 @@ jobs:
     steps:
       - uses: actions/checkout@v2.1.0
       - uses: jitterbit/get-changed-files@v1
-      - uses: actions/setup-python@v4
         id: abc
         with:
           format: space-delimited
           token: ${{ secrets.GITHUB_TOKEN }}
-          python-version: '3.10'
       - name: Printing
         run: |
           echo "Added+Modified Markdown Files:"
           echo "${{ steps.abc.outputs.added_modified }}" | grep *.md
-          pip install -r requirements
-          python ./Parser/parser.py -f sample.md
 
  #         echo "All:"
  #         echo "${{ steps.abc.outputs.all }}"
