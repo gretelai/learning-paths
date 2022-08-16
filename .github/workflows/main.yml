@@ -18,7 +18,7 @@ jobs:
         run: |
           echo "Added+Modified Markdown Files:"
           echo "${{ steps.abc.outputs.added_modified }}" | { grep *.md || true; }
-          pip install -r requirements
+          pip install -r ./Parser/requirements
           python ./Parser/parser.py -f sample.md
 
  #         echo "All:"

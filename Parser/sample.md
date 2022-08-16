@@ -1,5 +1,5 @@
 ---
-This is an example page detailing Gretel's supported Markdown Syntax. 
+This is an example page detailing Gretel's supported Markdown Syntax. 1
 
 
 * [John Gruber's Markdown](https://daringfireball.net/projects/markdown/)
