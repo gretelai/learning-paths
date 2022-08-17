@@ -25,19 +25,10 @@ jobs:
         with:
           python-version: '3.10'
       - name: Read From Previous Job
-        run: echo ${{needs.find-files.outputs.added}}
+        run: echo ${{needs.find-files.outputs.modified}}
       - name: Install Python Requirements
         run: pip install -r Parser/requirements.txt
-
- #         echo "All:"
- #         echo "${{ steps.abc.outputs.all }}"
- #         echo "Added:"
- #         echo "${{ steps.abc.outputs.added }}"
- #         echo "Removed:"
- #         echo "${{ steps.abc.outputs.removed }}"
- #         echo "Renamed:"
- #         echo "${{ steps.abc.outputs.renamed }}"
- #         echo "Modified:"
- #         echo "${{ steps.abc.outputs.modified }}"
- #         echo "Added+Modified:"
- #         echo "${{ steps.abc.outputs.added_modified }}"
+      - name: Process Added Files
+        run: python Parser/parser.py --file-list ${{ needs.find-files.outputs.added }}
+      - name: Process Modified Files
+        run: python Parser/parser.py --file-list ${{ needs.find-files.outputs.modified }}
