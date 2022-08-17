@@ -34,7 +34,7 @@ HTML_FOOTERS = """
 
 
 def parse_markdown(md_file, headers=False):
-    with open("sample.md", "r") as f:
+    with open(md_file, "r") as f:
         text = f.read()
         html = markdown.markdown(text, extensions=extensions)
 
