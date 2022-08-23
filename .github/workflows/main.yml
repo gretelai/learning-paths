@@ -27,10 +27,10 @@ jobs:
       - name: Read From Previous Job
         run: echo ${{needs.find-files.outputs.modified}}
       - name: Install Python Requirements
-        run: pip install -r Parser/requirements.txt
+        run: pip install -r utils/requirements.txt
       - name: Process Added Files
         if: ${{ needs.find-files.outputs.added }}
-        run: python Parser/parser.py --file-list ${{ needs.find-files.outputs.added }}
+        run: python utils/gretel_processor.py --files ${{ needs.find-files.outputs.added }}
       - name: Process Modified Files
         if: ${{ needs.find-files.outputs.modified }}
-        run: python Parser/parser.py --file-list ${{ needs.find-files.outputs.modified }}
+        run: python utils/gretel_processor.py --files ${{ needs.find-files.outputs.modified }}
