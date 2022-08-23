@@ -53,9 +53,9 @@ if __name__ == "__main__":
     for md_file in [x for x in args.files.split(",") if x[-3:] == ".md"]:
         metadata, html = parse_markdown(md_file)
 
-        data["name"] = metadata["title"]
-        data["slug"] = metadata["slug"]
-        data["document"] = html
+        data["fields"]["name"] = metadata["title"]
+        data["fields"]["slug"] = metadata["slug"]
+        data["fields"]["document"] = html
 
         r = requests.post(
             f"https://api.webflow.com/collections/{collection_id}/items",
