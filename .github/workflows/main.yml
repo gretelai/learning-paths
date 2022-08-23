@@ -29,8 +29,14 @@ jobs:
       - name: Install Python Requirements
         run: pip install -r utils/requirements.txt
       - name: Process Added Files
+        env:
+          COLLECTION_ID: ${{ secrets.COLLECTION_ID }}
+          BEARER_TOKEN: ${{ secrets.BEARER_TOKEN }}
         if: ${{ needs.find-files.outputs.added }}
         run: python utils/gretel_processor.py --files ${{ needs.find-files.outputs.added }}
       - name: Process Modified Files
+        env:
+          COLLECTION_ID: ${{ secrets.COLLECTION_ID }}
+          BEARER_TOKEN: ${{ secrets.BEARER_TOKEN }}
         if: ${{ needs.find-files.outputs.modified }}
         run: python utils/gretel_processor.py --files ${{ needs.find-files.outputs.modified }}
