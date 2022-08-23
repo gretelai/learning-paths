@@ -16,8 +16,9 @@ jobs:
         with:
           format: csv
           token: ${{ secrets.GITHUB_TOKEN }}
-  show-files:
+  upload-files:
     needs: find-files
+    environment: learning-path-upload
     runs-on: ubuntu-latest
     env:
       COLLECTION_ID: ${{ secrets.COLLECTION_ID }}

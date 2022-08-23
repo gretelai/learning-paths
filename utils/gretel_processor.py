@@ -7,7 +7,7 @@ from parser import parse_markdown
 bearer_token = os.getenv("BEARER_TOKEN", None)
 collection_id = os.getenv("COLLECTION_ID", None)
 
-if bearer_token is None or collection_id is None:
+if bearer_token in (None, "") or collection_id in (None, ""):
     print("Bearer Token and Collection ID must be set via env vars")
     sys.exit(1)
 
