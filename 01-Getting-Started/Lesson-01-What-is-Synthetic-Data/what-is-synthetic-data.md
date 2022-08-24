@@ -7,4 +7,4 @@ slug: "what-is-synthetic-data" # Must be the same as the file!
 description: "some fancy description"
 ---
 
-# Lesson-01-What-is-Synthetic-Data
+# Lesson 1 - What is Synthetic Data?

@@ -164,7 +164,12 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     if args.files is not None:
-        files = [x for x in args.files.split(",") if x[-3:] == ".md"]
+        excluded_files_list = ["README.md", "utils/sample.md"]
+        files = [
+            x
+            for x in args.files.split(",")
+            if x[-3:] == ".md" and x not in excluded_files_list
+        ]
 
     slugs = get_ids_from_slugs(collection_id)
 
