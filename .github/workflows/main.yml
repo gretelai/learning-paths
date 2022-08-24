@@ -34,7 +34,10 @@ jobs:
         run: pip install -r utils/requirements.txt
       - name: Process Added Files
         if: ${{ needs.find-files.outputs.added }}
-        run: python utils/gretel_processor.py --files ${{ needs.find-files.outputs.added }}
+        run: python utils/gretel_processor.py --files ${{ needs.find-files.outputs.added }} --create
       - name: Process Modified Files
         if: ${{ needs.find-files.outputs.modified }}
-        run: python utils/gretel_processor.py --files ${{ needs.find-files.outputs.modified }}
+        run: python utils/gretel_processor.py --files ${{ needs.find-files.outputs.modified }} --update --force
+      - name: Process Deleted Files
+        if: ${{ needs.find-files.outputs.removed }}
+        run: python utils/gretel_processor.py --files ${{ needs.find-files.outputs.modified }} --delete

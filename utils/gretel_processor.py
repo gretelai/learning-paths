@@ -27,30 +27,22 @@ data = {
     }
 }
 
-if __name__ == "__main__":
-    parser = argparse.ArgumentParser(
-        description="Gretel Markdown to Webflow processor. Converts MD to HTML and uploads via the Webflow API"
-    )
-    group = parser.add_mutually_exclusive_group()
-    group.add_argument(
-        "-c", "--create", action="store_true", help="Publish a new document"
-    )
-    group.add_argument(
-        "-u", "--update", action="store_true", help="Update an existing document"
-    )
-    parser.add_argument(
-        "-f", "--files", required=True, help="Comma separated list of files to process"
-    )
 
-    parser.add_argument(
-        "-hh",
-        "--headers",
-        action="store_true",
-        help="Include sample HTML body, styles, and headers",
+def get_ids_from_slugs(collection):
+    ids = {}
+    r = requests.get(
+        f"https://api.webflow.com/collections/{collection}/items", headers=headers
     )
-    args = parser.parse_args()
+    raw_json = r.json()
 
-    for md_file in [x for x in args.files.split(",") if x[-3:] == ".md"]:
+    for item in raw_json["items"]:
+        ids[item["slug"]] = item["_id"]
+
+    return ids
+
+
+def create_learning_path(files):
+    for md_file in files:
         metadata, html = parse_markdown(md_file)
 
         data["fields"]["name"] = metadata["title"]
@@ -66,4 +58,93 @@ if __name__ == "__main__":
         # print(r.request.body)
         # print(r.request.headers)
         print(r.status_code)
-        print(r.text)
+
+
+def update_learning_path(files, slugs, force=False):
+    for md_file in files:
+        metadata, html = parse_markdown(md_file)
+
+        if slugs.has_key(metadata["slug"]) is False:
+            if force is True:
+                create_learning_path([md_file])
+                continue
+            else:
+                print(
+                    "WARNING: File to update doesn't exist in Webflow. To force a create use the --force option"
+                )
+                continue
+
+        data["fields"]["name"] = metadata["title"]
+        data["fields"]["slug"] = metadata["slug"]
+        data["fields"]["document"] = html
+
+        id = slugs[metadata["slug"]]
+        r = requests.put(
+            f"https://api.webflow.com/collections/{collection_id}/items/{id}",
+            headers=headers,
+            json=data,
+        )
+        # print(r.request.url)
+        # print(r.request.body)
+        # print(r.request.headers)
+        print(r.status_code)
+
+
+def delete_learning_path(files, slugs):
+    for md_file in files:
+        metadata, _ = parse_markdown(md_file)
+        if slugs.has_key(metadata["slug"]) is False:
+            print(
+                f"WARNING: {md_file} does not exist in Webflow and therefore can't be deleted"
+            )
+            continue
+
+        id = slugs[metadata["slug"]]
+
+        r = requests.delete(
+            f"https://api.webflow.com/collections/{collection_id}/items/{id}",
+            headers=headers,
+        )
+
+        print(f"{md_file} DELETED with code {r.status_code}")
+
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(
+        description="Gretel Markdown to Webflow processor. Converts MD to HTML and uploads via the Webflow API"
+    )
+    group = parser.add_mutually_exclusive_group(required=True)
+    group.add_argument(
+        "-c", "--create", action="store_true", help="Publish a new document"
+    )
+    group.add_argument(
+        "-u", "--update", action="store_true", help="Update an existing document"
+    )
+    group.add_argument(
+        "-d", "--delete", action="store_true", help="Delete an existing document"
+    )
+    parser.add_argument(
+        "-f", "--files", required=True, help="Comma separated list of files to process"
+    )
+    parser.add_argument(
+        "-fo", "--force", help="Force create documents on update if they don't exist"
+    )
+
+    parser.add_argument(
+        "-hh",
+        "--headers",
+        action="store_true",
+        help="Include sample HTML body, styles, and headers",
+    )
+    args = parser.parse_args()
+
+    files = [x for x in args.files.split(",") if x[-3:] == ".md"]
+
+    slugs = get_ids_from_slugs(collection_id)
+
+    if args.create is True:
+        create_learning_path(files)
+    elif args.update is True:
+        update_learning_path(files, slugs, force=args.force)
+    elif args.delete is True:
+        delete_learning_path(files, slugs)
