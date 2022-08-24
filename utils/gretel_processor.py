@@ -92,14 +92,14 @@ def update_learning_path(files, slugs, force=False):
 
 def delete_learning_path(files, slugs):
     for md_file in files:
-        metadata, _ = parse_markdown(md_file)
-        if slugs.has_key(metadata["slug"]) is False:
+        file_name = os.path.basename(md_file[:-3])
+        if slugs.has_key(file_name) is False:
             print(
                 f"WARNING: {md_file} does not exist in Webflow and therefore can't be deleted"
             )
             continue
 
-        id = slugs[metadata["slug"]]
+        id = slugs[file_name]
 
         r = requests.delete(
             f"https://api.webflow.com/collections/{collection_id}/items/{id}",
@@ -127,7 +127,10 @@ if __name__ == "__main__":
         "-f", "--files", required=True, help="Comma separated list of files to process"
     )
     parser.add_argument(
-        "-fo", "--force", help="Force create documents on update if they don't exist"
+        "-fo",
+        "--force",
+        action="store_true",
+        help="Force create documents on update if they don't exist",
     )
 
     parser.add_argument(

@@ -3,7 +3,7 @@ layout: tutorial
 learning-path: "Your First Synthetic Data Model"
 learning-path-slug: "first-synthetic-data-model"
 title: "Sample Markdown"
-slug: "sample-markdown"
+slug: "sample" # Must be the same as the file name!
 description: "some fancy description"
 ---
 

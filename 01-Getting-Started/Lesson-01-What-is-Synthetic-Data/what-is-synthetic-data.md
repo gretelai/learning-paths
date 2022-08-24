@@ -2,10 +2,9 @@
 layout: tutorial
 learning-path: "Getting Started with Synthetic Data"
 learning-path-slug: "getting-started"
-title: "Synthetic Data and Privacy"
-slug: "synthetic-data-and-privacy"
+title: "What is Synthetic Data"
+slug: "what-is-synthetic-data" # Must be the same as the file!
 description: "some fancy description"
 ---
 
-# Lesson-02-Synthetic-Data-and-Privacy
-1
+# Lesson-01-What-is-Synthetic-Data
