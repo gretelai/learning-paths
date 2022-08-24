@@ -64,7 +64,7 @@ def update_learning_path(files, slugs, force=False):
     for md_file in files:
         metadata, html = parse_markdown(md_file)
 
-        if slugs.has_key(metadata["slug"]) is False:
+        if metadata["slug"] in slugs is False:
             if force is True:
                 create_learning_path([md_file])
                 continue
@@ -93,7 +93,7 @@ def update_learning_path(files, slugs, force=False):
 def delete_learning_path(files, slugs):
     for md_file in files:
         file_name = os.path.basename(md_file[:-3])
-        if slugs.has_key(file_name) is False:
+        if file_name in slugs is False:
             print(
                 f"WARNING: {md_file} does not exist in Webflow and therefore can't be deleted"
             )
