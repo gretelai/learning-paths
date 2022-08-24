@@ -40,4 +40,4 @@ jobs:
         run: python utils/gretel_processor.py --files ${{ needs.find-files.outputs.modified }} --update --force
       - name: Process Deleted Files
         if: ${{ needs.find-files.outputs.removed }}
-        run: python utils/gretel_processor.py --files ${{ needs.find-files.outputs.modified }} --delete
+        run: python utils/gretel_processor.py --files ${{ needs.find-files.outputs.removed }} --delete
