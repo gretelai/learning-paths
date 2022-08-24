@@ -1,6 +1,8 @@
 import markdown
 import argparse
 import sys
+import requests
+import frontmatter
 
 extensions = [
     "meta",
@@ -33,41 +35,40 @@ HTML_FOOTERS = """
 
 
 def parse_markdown(md_file, headers=False):
-    with open("sample.md", "r") as f:
-        text = f.read()
-        html = markdown.markdown(text, extensions=extensions)
+    metadata = ""
+    with open(md_file, "r") as f:
+        text = frontmatter.loads(f.read())
+        if len(text.keys()) > 0:
+            metadata = text.metadata
+        html = markdown.markdown(text.content, extensions=extensions)
 
     if headers is True:
         html = f"{HTML_HEADERS}{html}{HTML_FOOTERS}"
 
-    return html
+    return metadata, html
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
         description="Markdown to HTML parser with Gretel custom Markdown"
     )
-    parser.add_argument("-f", "--file", help="Markdown file to convert to HTML string")
+    parser.add_argument(
+        "-f", "--file", required=True, help="Markdown file to convert to HTML string"
+    )
     parser.add_argument(
         "-hh",
         "--headers",
         action="store_true",
-        help="Include HTML body, styles, and headers",
+        help="Include sample HTML body, styles, and headers",
     )
-    parser.add_argument("-o", "--output", help="File location to store HTML output")
+    parser.add_argument(
+        "-md", "--metadata", action="store_true", help="Include metadata in output"
+    )
 
     args = parser.parse_args()
-    if args.file is None:
-        print("Markdown file to convert required.")
-        sys.exit(1)
 
-    if args.headers is True:
-        html_output = parse_markdown(args.file, headers=True)
-    else:
-        html_output = parse_markdown(args.file)
+    html_output = parse_markdown(args.file, headers=args.headers)
 
-    if args.output is not None:
-        with open(args.output, "w") as fh:
-            fh.write(html_output)
-    else:
-        print(html_output)
+    if args.metadata is True:
+        print(html_output[0])
+    print(html_output[1])

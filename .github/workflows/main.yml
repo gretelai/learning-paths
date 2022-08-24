@@ -3,26 +3,41 @@ name: Test
 on: [workflow_dispatch, push]
 
 jobs:
-  test:
+  find-files:
     runs-on: ubuntu-latest
+    outputs: 
+      added: ${{ steps.abc.outputs.added }}
+      modified: ${{ steps.abc.outputs.modified }}
+      removed: ${{ steps.abc.outputs.removed }}
     steps:
-      - uses: actions/checkout@v2.1.0
+      - uses: actions/checkout@v3
       - uses: jitterbit/get-changed-files@v1
         id: abc
         with:
-          format: space-delimited
+          format: csv
           token: ${{ secrets.GITHUB_TOKEN }}
-      - name: Printing
-        run: |
-          echo "All:"
-          echo "${{ steps.abc.outputs.all }}"
-          echo "Added:"
-          echo "${{ steps.abc.outputs.added }}"
-          echo "Removed:"
-          echo "${{ steps.abc.outputs.removed }}"
-          echo "Renamed:"
-          echo "${{ steps.abc.outputs.renamed }}"
-          echo "Modified:"
-          echo "${{ steps.abc.outputs.modified }}"
-          echo "Added+Modified:"
-          echo "${{ steps.abc.outputs.added_modified }}"
+  upload-files:
+    needs: find-files
+    environment: learning-path-upload
+    runs-on: ubuntu-latest
+    env:
+      COLLECTION_ID: ${{ secrets.COLLECTION_ID }}
+      BEARER_TOKEN: ${{ secrets.BEARER_TOKEN }}
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+      - name: Read From Previous Job
+        run: echo ${{needs.find-files.outputs.modified}}
+      - name: Install Python Requirements
+        run: pip install -r utils/requirements.txt
+      - name: Process Added Files
+        if: ${{ needs.find-files.outputs.added }}
+        run: python utils/gretel_processor.py --files ${{ needs.find-files.outputs.added }} --create
+      - name: Process Modified Files
+        if: ${{ needs.find-files.outputs.modified }}
+        run: python utils/gretel_processor.py --files ${{ needs.find-files.outputs.modified }} --update --force
+      - name: Process Deleted Files
+        if: ${{ needs.find-files.outputs.removed }}
+        run: python utils/gretel_processor.py --files ${{ needs.find-files.outputs.removed }} --delete

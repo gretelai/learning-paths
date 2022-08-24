@@ -1,10 +1,16 @@
 ---
-This is an example page detailing Gretel's supported Markdown Syntax.
+layout: tutorial
+learning-path: "Your First Synthetic Data Model"
+learning-path-slug: "first-synthetic-data-model"
+title: "Sample Markdown"
+slug: "sample" # Must be the same as the file name!
+description: "some fancy description"
+---
 
+This is an example page detailing Gretel's supported Markdown Syntax.
 
 * [John Gruber's Markdown](https://daringfireball.net/projects/markdown/)
 * [PyMdown Extensions](https://facelessuser.github.io/pymdown-extensions/)
----
 
 # h1 Heading 8-)
 ## h2 Heading
